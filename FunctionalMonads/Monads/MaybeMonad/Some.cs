@@ -61,6 +61,9 @@ namespace FunctionalMonads.Monads.MaybeMonad
         public static implicit operator Some<T>(T value) =>
             new(value);
 
+        public static implicit operator T(Some<T> some) =>
+            some.Value;
+
         public bool Equals(Some<T> other) => 
             EqualityComparer<T>.Default.Equals(Value, other.Value);
 
