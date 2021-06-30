@@ -12,8 +12,6 @@ namespace FunctionalMonads.Monads.MaybeMonad
         
         bool IsNone { get; }
 
-        T SomeUnsafe { get; }
-
         IMaybe<TMap> Map<TMap>(Func<T, TMap> mapFunc);
 
         IMaybe<TBind> Bind<TBind>(Func<T, IMaybe<TBind>> binFunc);

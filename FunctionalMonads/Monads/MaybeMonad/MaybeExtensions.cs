@@ -51,8 +51,8 @@ namespace FunctionalMonads.Monads.MaybeMonad
         //            none: Result.Failure<TValue, TFailure>(onNone));
 
         /// <summary>
-        /// Extracts from a list of `Option` all the `Some` elements.
-        /// All the `Some` elements are extracted in order.
+        /// Extracts from a list of `Option` all the `MaybeSome` elements.
+        /// All the `MaybeSome` elements are extracted in order.
         /// </summary>
         /// <typeparam name="TValue">The inner type of the Maybe.</typeparam>
         /// <param name="self">The sequence of Maybes.</param>
@@ -65,13 +65,13 @@ namespace FunctionalMonads.Monads.MaybeMonad
                 throw new ArgumentNullException(nameof(self));
             }
 
-            return self.OfType<Some<T>>().Select(x => x.Value);
+            return self.OfType<MaybeSome<T>>().Select(x => x.Value);
         }
 
         private static IMaybeT<T> ToMaybeT<T>(this IMaybe<T> self) =>
-            self.IsSome 
-                ? new Some<T>(self.SomeUnsafe) 
-                : new None<T>();
+            self.Match<IMaybeT<T>>(
+                t => new MaybeSome<T>(t),
+                () => new MaybeNone<T>());
 
         public static T SomeOrProvided<T>(this IMaybe<T> self, Func<T> provider) =>
             self.ToMaybeT().SomeOrProvided(provider);

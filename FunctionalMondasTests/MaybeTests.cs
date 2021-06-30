@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.WebSockets;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -9,6 +10,7 @@ using FunctionalMonads.Monads.MaybeMonad;
 using NUnit.Framework;
 using static FunctionalMonads.Monads.MaybeMonad.Maybe;
 using static FunctionalMonadsTests.TestHelper;
+using None = FunctionalMonads.Monads.MaybeMonad.None;
 
 namespace FunctionalMonadsTests
 {
@@ -26,7 +28,7 @@ namespace FunctionalMonadsTests
 
             // assert
             mapSome.IsSome.Should().BeTrue();
-            var doubleSome = mapSome.Should().BeAssignableTo<Some<double>>().Subject;
+            var doubleSome = mapSome.Should().BeAssignableTo<MaybeSome<double>>().Subject;
             doubleSome.Value.Should().Be(number / 2.0);
         }
 
@@ -41,7 +43,82 @@ namespace FunctionalMonadsTests
 
             // assert
             mapNone.IsNone.Should().BeTrue();
-            mapNone.Should().BeAssignableTo<None<double>>();
+            mapNone.Should().BeAssignableTo<MaybeNone<double>>();
+        }
+
+        [Test]
+        public void IsPatternMatchingSomeTest()
+        {
+            // arrange
+            IMaybe<IEnumerable<int>> some = Some(new List<int>());
+
+            // assert
+            if (some is Some<IEnumerable<int>> s)
+            {
+                s.Value.Should().BeAssignableTo<List<int>>();
+                Assert.Pass();
+            }
+            else
+            {
+                Assert.Fail();
+            }
+        }
+
+        [Test]
+        public void ISPatternMatchingNoneTest()
+        {
+            // arrange
+            IMaybe<IEnumerable<int>> none = None<List<int>>();
+
+            // assert
+            if (none is None && none is None<IEnumerable<int>>)
+            {
+                Assert.Pass();
+            }
+            else
+            {
+                Assert.Fail();
+            }
+        }
+
+        [Test]
+        public void SwitchPatternMatchingSomeTest()
+        {
+            // arrange
+            IMaybe<IEnumerable<int>> some = Some(new List<int>(){ 1 });
+
+            // act
+            var result = some switch
+            {
+                Some<IEnumerable<int>> x =>
+                    x.Value,
+                None _ =>
+                    Enumerable.Empty<int>(),
+                _ => throw new System.NotImplementedException(),
+            };
+
+            // assert
+            result.Should().HaveCount(1);
+        }
+
+        [Test]
+        public void SwitchPatternMatchingNoneTest()
+        {
+            // arrange
+            IMaybe<IEnumerable<int>> none = None<List<int>>();
+
+            // act
+            var result = none switch
+            {
+                Some<IEnumerable<int>> x =>
+                    x.Value,
+                None _ =>
+                    Enumerable.Empty<int>(),
+                _ => throw new System.NotImplementedException(),
+            };
+
+            // assert
+            result.Should().HaveCount(0);
         }
 
         [Test]
@@ -56,7 +133,7 @@ namespace FunctionalMonadsTests
 
             // assert
             result.IsSome.Should().BeTrue();
-            var someString = result.Should().BeAssignableTo<Some<string>>().Subject;
+            var someString = result.Should().BeAssignableTo<MaybeSome<string>>().Subject;
             someString.Value.Should().Be(prefix + value);
         }
 
@@ -71,7 +148,7 @@ namespace FunctionalMonadsTests
 
             // assert
             result.IsSome.Should().BeFalse();
-            result.Should().BeAssignableTo<None<string>>();
+            result.Should().BeAssignableTo<MaybeNone<string>>();
         }
 
         [Test]
@@ -89,7 +166,7 @@ namespace FunctionalMonadsTests
 
             // assert
             result.IsSome.Should().BeTrue();
-            var someResult = result.Should().BeAssignableTo<Some<string>>().Subject;
+            var someResult = result.Should().BeAssignableTo<MaybeSome<string>>().Subject;
             someResult.Value.Should().Be(stringVal + intVal);
         }
 
@@ -110,7 +187,7 @@ namespace FunctionalMonadsTests
 
             // assert
             result.IsSome.Should().BeFalse();
-            result.Should().BeAssignableTo<None<string>>();
+            result.Should().BeAssignableTo<MaybeNone<string>>();
         }
 
         [Test]
@@ -120,7 +197,7 @@ namespace FunctionalMonadsTests
             var some = RandomSome(RandomString, out var s);
 
             // act
-            var result = some.Match(x => x, () => "None");
+            var result = some.Match(x => x, () => "MaybeNone");
 
             // assert
             result.Should().Be(s);

@@ -2,11 +2,10 @@
 
 namespace FunctionalMonads.Monads.MaybeMonad
 {
-    public readonly struct None<T> : IMaybeT<T>
+    public readonly struct MaybeNone<T> : None<T>, IMaybeT<T>
     {
         public bool IsSome => false;
         public bool IsNone => true;
-        public T SomeUnsafe => throw new NullReferenceException();
 
         public IMaybe<TMap> Map<TMap>(Func<T, TMap> mapFunc) =>
             Maybe.None<TMap>();
@@ -45,25 +44,25 @@ namespace FunctionalMonads.Monads.MaybeMonad
             return bindFunction();
         }
 
-        public static bool operator ==(None<T> maybe, T value) => 
+        public static bool operator ==(MaybeNone<T> maybe, T value) => 
             false;
 
-        public static bool operator !=(None<T> maybe, T value) =>
+        public static bool operator !=(MaybeNone<T> maybe, T value) =>
             !(maybe == value);
 
         public bool Equals(IMaybe<T>? other) => 
-            other is None<T>;
+            other is MaybeNone<T>;
 
-        public bool Equals(None<T> other) => 
+        public bool Equals(MaybeNone<T> other) => 
             true;
 
         public override bool Equals(object obj) => 
-            obj is None<T> other && Equals(other);
+            obj is MaybeNone<T> other && Equals(other);
 
         public override int GetHashCode() => 
             typeof(T).GetHashCode();
 
         public override string ToString() =>
-            "None()";
+            "MaybeNone()";
     }
 }

@@ -5,9 +5,9 @@ namespace FunctionalMonads.Monads.EitherMonad
     public static class EitherExtensions
     {
         private static IEitherT<TLeft, TRight> ToEitherT<TLeft, TRight>(this IEither<TLeft, TRight> self) =>
-            self.IsLeft
-                ? new Left<TLeft, TRight>(self.LeftUnsafe)
-                : new Right<TLeft, TRight>(self.RightUnsafe);
+            self.Match<IEitherT<TLeft, TRight>>(
+                left => new EitherLeft<TLeft, TRight>(left),
+                right => new EitherRight<TLeft, TRight>(right));
 
         public static IEither<TBindLeft, TRight> BindLeft<TLeft, TRight, TBindLeft>(this IEither<TLeft, TRight> self, Func<TLeft, IEither<TBindLeft, TRight>> bindFunc) =>
             self.Bind(bindFunc, Either.Right<TBindLeft, TRight>);

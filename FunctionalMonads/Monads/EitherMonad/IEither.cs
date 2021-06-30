@@ -8,10 +8,6 @@ namespace FunctionalMonads.Monads.EitherMonad
 
         bool IsRight { get; }
 
-        TLeft LeftUnsafe { get; }
-
-        TRight RightUnsafe { get; }
-
         IEither<TMapLeft, TMapRight> Map<TMapLeft, TMapRight>(Func<TLeft, TMapLeft> mapLeftFunc,
             Func<TRight, TMapRight> mapRightFunc);
 
@@ -27,9 +23,11 @@ namespace FunctionalMonads.Monads.EitherMonad
 
         TRet Match<TRet>(Func<TLeft, TRet> onLeft, Func<TRight, TRet> onRight);
 
-        Unit IfLeft(Action<TLeft> onLeft);
+        Unit IfLeft(Action<TLeft> onLeft) =>
+            Do(onLeft, _ => {});
 
-        Unit IfRight(Action<TRight> onRight);
+        Unit IfRight(Action<TRight> onRight) =>
+            Do(_ => { }, onRight);
 
         Unit Do(Action<TLeft> onLeft, Action<TRight> onRight);
     }
