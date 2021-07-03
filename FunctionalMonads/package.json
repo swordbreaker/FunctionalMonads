@@ -1,11 +1,12 @@
-﻿{
-	"name": "com.swordi.functionalmonads",
-	"displayName": "FunctionalMonads",
-	"author": { "name": "Tobias Bollinger", "url": "https://tobias-bollinger.ch" },
-	"version": "0.1.0-alpha",
-	"unity": "2018.4",
-	"description": "Provides functional monads like maybe and either.",
-	"keywords": [ "functional", "monad", "Task", "parser" ],
-	"license": "MIT",
-	"dependencies": {}
+{
+    "name": "com.swordi.functionalmonads",
+    "displayName": "FunctionalMonads",
+    "author": { "name": "Tobias Bollinger", "url": "https://tobias-bollinger.ch" },
+    "version": "0.1.0-alpha",
+    "unity": "2018.4",
+    "description": "Provides functional monads like maybe and either.",
+    "keywords": [ "functional", "monad", "Task", "parser" ],
+    "license": "MIT",
+    "documentationUrl": "https://github.com/swordbreaker/FunctionalMonads",
+    "dependencies": {}
 }
