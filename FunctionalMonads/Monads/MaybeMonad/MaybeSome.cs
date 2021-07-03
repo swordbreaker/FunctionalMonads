@@ -15,7 +15,6 @@ namespace FunctionalMonads.Monads.MaybeMonad
 
         public bool IsSome => true;
         public bool IsNone => false;
-        public T SomeUnsafe => Value;
 
         public IMaybe<TMap> Map<TMap>(Func<T, TMap> mapFunc)
         {
