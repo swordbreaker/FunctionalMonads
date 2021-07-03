@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,6 +7,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using FluentAssertions.Formatting;
 using FunctionalMonads.Monads;
+using FunctionalMonads.Monads.EitherMonad;
 using FunctionalMonads.Monads.MaybeMonad;
 using NUnit.Framework;
 using static FunctionalMonads.Monads.MaybeMonad.Maybe;

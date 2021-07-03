@@ -18,7 +18,8 @@ namespace FunctionalMonadsTests
             };
 
             var result= sut.Match(
-                (h, b) => b.Append(h))
+                (h, b) => b.Append(h),
+                Enumerable.Empty<int>)
                 .ToList();
 
             result[0].Should().Be(sut[1]);
@@ -35,7 +36,8 @@ namespace FunctionalMonadsTests
             };
 
             var result = sut.Match(
-                (head, tail) => tail.Append(head))
+                (head, tail) => tail.Append(head), 
+                Enumerable.Empty<int>)
                 .ToList();
 
             result[0].Should().Be(sut[0]);
@@ -53,7 +55,8 @@ namespace FunctionalMonadsTests
             };
 
             var result = sut.Match(
-                (init, last) => init.Prepend(last))
+                (init, last) => init.Prepend(last),
+                Enumerable.Empty<int>)
                 .ToList();
 
             result[0].Should().Be(sut[2]);
@@ -71,7 +74,8 @@ namespace FunctionalMonadsTests
             };
 
             var result = sut.Match(
-                (init, last) => init.Prepend(last))
+                (init, last) => init.Prepend(last),
+                Enumerable.Empty<int>)
                 .ToList();
 
             result[0].Should().Be(sut[0]);
