@@ -7,6 +7,5 @@
 	"description": "Provides functional monads like maybe and either.",
 	"keywords": [ "functional", "monad", "Task", "parser" ],
 	"license": "MIT",
-	"category": "Functional",
 	"dependencies": {}
 }
