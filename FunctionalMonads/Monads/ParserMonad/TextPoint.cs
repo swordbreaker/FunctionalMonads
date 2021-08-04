@@ -1,4 +1,5 @@
-﻿using FunctionalMonads.Monads.MaybeMonad;
+﻿using System.Net.Mime;
+using FunctionalMonads.Monads.MaybeMonad;
 
 namespace FunctionalMonads.Monads.ParserMonad
 {
@@ -6,6 +7,9 @@ namespace FunctionalMonads.Monads.ParserMonad
     {
         private readonly int _position;
         private readonly string _text;
+
+        public static TextPoint Create(string content) =>
+            new(0, content, 0, 0);
 
         private TextPoint(int position, string text, int line, int column)
             :this(text[position], line, column)
@@ -16,17 +20,16 @@ namespace FunctionalMonads.Monads.ParserMonad
 
         public IMaybe<TextPoint> Advance()
         {
-            if (_position < _text.Length)
-            {
-                return Maybe.Some(
+            return CanAdvance
+                ? Maybe.Some(
                     new TextPoint(
-                    _position + 1, _text, 
-                    IsNewLine ? 0 : Column + 1,
-                    IsNewLine ? Line + 1 : Line));
-            }
-
-            return Maybe.None<TextPoint>();
+                        _position + 1, _text,
+                        IsNewLine ? 0 : Column + 1,
+                        IsNewLine ? Line + 1 : Line))
+                : Maybe.None<TextPoint>();
         }
+
+        public bool CanAdvance => _position < _text.Length;
 
         private bool IsNewLine => Current == '\n';
     }

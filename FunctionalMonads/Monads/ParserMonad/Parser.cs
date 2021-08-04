@@ -17,11 +17,20 @@ namespace FunctionalMonads.Monads.ParserMonad
         public IEither<IPResult<T>, IParseFailure> Parse(TextPoint point) => 
             _parserFunc(point);
 
-        public IParser<TMap> Map<TMap>(Func<IPResult<T>, TMap> mapFunc) =>
-            throw new NotImplementedException();
+        public IParser<TMap> Map<TMap>(Func<IPResult<T>, TMap> mapFunc) => 
+            new Parser<TMap>(
+                point => 
+                    _parserFunc(point)
+                        .MapLeft(result => 
+                            new PResult<TMap>(mapFunc(result))));
 
         public static implicit operator Parser<T>(ParseFuc<T> parseFuc) =>
             new(parseFuc);
+
+        //public IParser<TBind> Bind<TBind>(Func<IPResult<T>, IParser<TBind>> binFunc) =>
+        //    new Parser<TBind>(point => 
+        //        _parserFunc(point)
+        //            .BindLeft(result => binFunc(result).));
 
         public IParser<TBind> Bind<TBind>(Func<IPResult<T>, IParser<TBind>> binFunc) =>
             throw new NotImplementedException();

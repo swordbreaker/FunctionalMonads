@@ -3,7 +3,5 @@
     public interface IPResult<out T>
     {
         T Value { get; }
-
-        
     }
 }
