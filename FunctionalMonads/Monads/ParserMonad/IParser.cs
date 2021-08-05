@@ -8,7 +8,7 @@ namespace FunctionalMonads.Monads.ParserMonad
         IEither<IPResult<T>, IParseFailure> Parse(TextPoint point);
 
         IParser<TMap> Map<TMap>(Func<IPResult<T>, TMap> mapFunc);
-        
+
         IParser<TBind> Bind<TBind>(Func<IPResult<T>, IParser<TBind>> binFunc);
 
         //public IParser<TResult> SelectMany<TIntermediate, TResult>(

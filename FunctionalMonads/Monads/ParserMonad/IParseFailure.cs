@@ -2,7 +2,8 @@
 {
     public interface IParseFailure
     {
-        TextPoint Point { get; }
+        TextPoint Start { get; }
+        TextPoint End { get; }
 
         string Message { get; }
     }

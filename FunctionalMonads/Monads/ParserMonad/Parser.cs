@@ -21,18 +21,15 @@ namespace FunctionalMonads.Monads.ParserMonad
             new Parser<TMap>(
                 point => 
                     _parserFunc(point)
-                        .MapLeft(result => 
-                            new PResult<TMap>(mapFunc(result))));
+                        .MapLeft(result =>
+                            result.With(mapFunc(result))));
 
         public static implicit operator Parser<T>(ParseFuc<T> parseFuc) =>
             new(parseFuc);
 
-        //public IParser<TBind> Bind<TBind>(Func<IPResult<T>, IParser<TBind>> binFunc) =>
-        //    new Parser<TBind>(point => 
-        //        _parserFunc(point)
-        //            .BindLeft(result => binFunc(result).));
-
         public IParser<TBind> Bind<TBind>(Func<IPResult<T>, IParser<TBind>> binFunc) =>
-            throw new NotImplementedException();
+            new Parser<TBind>(point =>
+                _parserFunc(point)
+                    .BindLeft(result => binFunc(result).Parse(result.End)));
     }
 }

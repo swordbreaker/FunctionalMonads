@@ -50,7 +50,7 @@ namespace FunctionalMonads.Monads.MaybeMonad
         public static bool operator !=(MaybeNone<T> maybe, T value) =>
             !(maybe == value);
 
-        public bool Equals(IMaybe<T>? other) => 
+        public bool Equals(IMaybe<T>? other) =>
             other is MaybeNone<T>;
 
         public bool Equals(MaybeNone<T> other) => 
