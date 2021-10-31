@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using FluentAssertions;
+using FunctionalMonads.Monads.EitherMonad;
 using FunctionalMonads.Monads.ParserMonad;
 using NUnit.Framework;
 
@@ -35,7 +36,7 @@ namespace FunctionalMonadsTests
             var parser =
                 from minus in Consume.Char('-')
                 from number in Consume.Char(char.IsDigit, "Digit")
-                select int.Parse($"{minus.Value}{number.Value}");
+                select int.Parse($"{minus}{number}");
 
             var result = parser.Parse(text);
 
@@ -47,6 +48,23 @@ namespace FunctionalMonadsTests
                     pResult.End.Column.Should().Be(1);
                 }, failure => Assert.Fail(failure.Message));
 
+        }
+
+        [Test]
+        public void TokenTest()
+        {
+            var input = "  Token  ";
+
+            var parser = Consume.String("Token").Token();
+
+            var output = parser.Parse(input);
+
+            var left = output.Should().BeAssignableTo<Left<IPResult<string>>>().Subject;
+            left.Value.Start.Column.Should().Be(3);
+            left.Value.End.Column.Should().Be(3 + "Token".Length);
+            left.Value.Value.Should().Be("Token");
+
+            input.Substring(left.Value.Start.Column, "Token".Length).Should().Be("Token");
         }
     }
 }

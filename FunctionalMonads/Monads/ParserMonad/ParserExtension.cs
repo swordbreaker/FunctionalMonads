@@ -18,6 +18,9 @@ namespace FunctionalMonads.Monads.ParserMonad
         public static IParser<TMap> Map<T, TMap>(this IParser<T> parser, Func<T, TMap> mapFunc) =>
             parser.Map(result => mapFunc(result.Value));
 
+        public static IParser<TMap> Select<T, TMap>(this IParser<T> parser, Func<T, TMap> mapFunc) =>
+            parser.Map(result => mapFunc(result.Value));
+
         public static IParser<TResult> Then<T, TResult>(this IParser<T> self, IParser<TResult> parser) =>
             self.Bind(_ => parser);
 
@@ -41,14 +44,35 @@ namespace FunctionalMonads.Monads.ParserMonad
             });
         }
 
-        public static IParser<TResult> SelectMany<TSource, TIntermediate, TResult>(
+        //public static IParser<TResult> SelectMany<TSource, TSelector, TResult>(
+        //    this IParser<TSource> self,
+        //    Func<IPResult<TSource>, IParser<TSelector>> selector,
+        //    Func<IPResult<TSource>, TSelector, TResult> getResult) =>
+        //    self.Bind(value =>
+        //        selector(value).Map(
+        //            intermediate =>
+        //                getResult(value, intermediate)));
+
+
+        public static IParser<TResult> SelectMany<TSource, TSelector, TResult>(
             this IParser<TSource> self,
-            Func<IPResult<TSource>, IParser<TIntermediate>> mapper,
-            Func<IPResult<TSource>, IPResult<TIntermediate>, TResult> getResult) =>
+            Func<TSource, IParser<TSelector>> selector,
+            Func<TSource, TSelector, TResult> getResult) =>
             self.Bind(value =>
-                mapper(value).Map(
+                selector(value.Value).Map(
                     intermediate =>
-                        getResult(value, intermediate)));
+                        getResult(value.Value, intermediate)));
+
+        //TMonad<TResult> SelectMany<TSource, TSelector, TResult>(
+        //    TMonad<TSource> source,
+        //    Func<TSource, TMonad<TSelector>> selector,
+        //    Func<TSource, TSelector, TResult> resultSelector);
+
+        //public static IParser<B> SelectMany<A, B>(
+        //    this IParser<A> first,
+        //    Func<IPResult<A>, IParser<B>> selector)
+        //    => first.Bind(selector)
+
 
         public static IParser<IMaybe<T>> Optional<T>(this IParser<T> self) =>
             new Parser<IMaybe<T>>(point =>
@@ -58,10 +82,16 @@ namespace FunctionalMonads.Monads.ParserMonad
                     failure => Either.Left<IPResult<IMaybe<T>>, IParseFailure>(
                         new PResult<IMaybe<T>>(Maybe.None<T>(), failure.Start, failure.End))));
 
-        public static IParser<T> Token<T>(IParser<T> self) =>
+        //public static IParser<T> Token<T>(IParser<T> self) =>
+        //    from head in Consume.Whitespace.Many()
+        //    from content in self
+        //    from tail in Consume.Whitespace.Many()
+        //    select content;
+
+        public static IParser<T> Token<T>(this IParser<T> self) =>
             from head in Consume.Whitespace.Many()
             from content in self
             from tail in Consume.Whitespace.Many()
-            select 
+            select content;
     }
 }

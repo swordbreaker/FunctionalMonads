@@ -31,7 +31,7 @@ namespace FunctionalMonads.Monads.ParserMonad
                 var current = point;
                 var i = 0;
 
-                while (i < text.Length && point.Advance() is Some<TextPoint> next && current.Current == text[i])
+                while (i < text.Length && current.Advance() is Some<TextPoint> next && current.Current == text[i])
                 {
                     i++;
                     current = next.Value;
@@ -59,14 +59,14 @@ namespace FunctionalMonads.Monads.ParserMonad
         public static IParser<int> Int =>
             from minus in Char('-').Optional()
             from digits in Digit.Many()
-            select minus.Value.Match(
-                c => -int.Parse(digits.Value.AsString()),
-                () => int.Parse(digits.Value.AsString()));
+            select minus.Match(
+                c => -int.Parse(digits.AsString()),
+                () => int.Parse(digits.AsString()));
 
         public static IParser<double> Double =>
             from characteristic in Int
             from fractional in Char('.').Then(Digit.Many()).Optional()
-            select characteristic.Value + fractional.Value.Match(
+            select characteristic + fractional.Match(
                 c => double.Parse($"0{c}"),
                 () => 0);
 

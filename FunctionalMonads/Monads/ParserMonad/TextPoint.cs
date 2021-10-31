@@ -23,8 +23,8 @@ namespace FunctionalMonads.Monads.ParserMonad
                 ? Maybe.Some(
                     new TextPoint(
                         _position + 1, _text,
-                        IsNewLine ? 0 : Column + 1,
-                        IsNewLine ? Line + 1 : Line))
+                        IsNewLine ? Line + 1 : Line,
+                        IsNewLine ? 0 : Column + 1))
                 : Maybe.None<TextPoint>();
         }
 
