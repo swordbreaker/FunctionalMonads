@@ -39,10 +39,30 @@ namespace FunctionalMondasTests
                 f => Assert.Fail(f.Message));
         }
 
+        [TestCase("a", 'a')]
+        [TestCase("c", 'c')]
+        [TestCase("d", 'd')]
+        public void TestMultipleCharactersChar(string input, char expectedOutput)
+        {
+            var result = Consume.Char('a', 'b', 'c', 'd').Parse(input);
+
+            result.IsLeft.Should().BeTrue();
+            result.Do(
+                x => x.Value.Should().Be(expectedOutput),
+                f => Assert.Fail(f.Message));
+        }
+
         [Test]
         public void Test()
         {
-            Consume.Char('+').Then
+            var parser = from a in Consume.Double.Token()
+                         from add in Consume.Char('+')
+                         from b in Consume.Double.Token()
+                         select a + b;
+
+            var result = parser.Parse("5 +    2");
+
+            result.Do(x => x.Value.Should().Be(7.2), f => Assert.Fail());
         }
     }
 }

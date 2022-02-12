@@ -44,7 +44,7 @@ namespace FunctionalMonadsTests
                 {
                     pResult.Value.Should().Be(value);
                     pResult.Start.Column.Should().Be(0);
-                    pResult.End.Column.Should().Be(2);
+                    pResult.Next.Column.Should().Be(2);
                 }, failure => Assert.Fail(failure.Message));
         }
 
@@ -59,7 +59,7 @@ namespace FunctionalMonadsTests
 
             var left = output.Should().BeAssignableTo<Left<IPResult<string>>>().Subject;
             left.Value.Start.Column.Should().Be(0);
-            left.Value.End.Column.Should().Be(input.Length);
+            left.Value.Next.Column.Should().Be(input.Length);
             left.Value.Value.Should().Be("Token");
         }
     }

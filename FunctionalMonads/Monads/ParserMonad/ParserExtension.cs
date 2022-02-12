@@ -12,6 +12,9 @@ namespace FunctionalMonads.Monads.ParserMonad
         public static IEither<IPResult<T>, IParseFailure> Parse<T>(this IParser<T> self, string text) =>
             self.Parse(TextPoint.Create(text));
 
+        public static IEither<T, IParseFailure> ParseToValue<T>(this IParser<T> self, string text) =>
+        self.Parse(TextPoint.Create(text)).MapLeft(x => x.Value);
+
         public static string AsString(this IEnumerable<char> self) =>
             new(self.ToArray());
 
@@ -23,8 +26,6 @@ namespace FunctionalMonads.Monads.ParserMonad
 
         public static IParser<TResult> Then<T, TResult>(this IParser<T> self, IParser<TResult> parser) =>
             self.Bind(_ => parser);
-
-
 
         public static IParser<IEnumerable<T>> Many<T>(this IParser<T> parser)
         {
@@ -90,7 +91,7 @@ namespace FunctionalMonads.Monads.ParserMonad
                         new PResult<IMaybe<T>>(Maybe.None<T>(), failure.Start, failure.End))));
 
         public static IEither<IPResult<T>, IParseFailure> WithNewStart<T>(this IEither<IPResult<T>, IParseFailure> self, TextPoint start) =>
-            self.Map(x => x.With(start, x.End), x => x.With(start, x.End));
+            self.Map(x => x.With(start, x.Next), x => x.With(start, x.End));
 
         //public static IParser<T> Token<T>(IParser<T> self) =>
         //    from head in Consume.Whitespace.Many()
