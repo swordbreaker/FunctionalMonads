@@ -2,6 +2,7 @@
 using System.Collections;
 using FluentAssertions;
 using FunctionalMonads.Monads.EitherMonad;
+using FunctionalMonads.Monads.MaybeMonad;
 using FunctionalMonads.Monads.ParserMonad;
 using NUnit.Framework;
 
@@ -28,26 +29,23 @@ namespace FunctionalMonadsTests
                 failure => Assert.Fail("Result should be successful"));
         }
 
-        [Test]
-        public void Bla()
+        [TestCase("-5", -5)]
+        public void Bla(string text, int value)
         {
-            var text = "-5";
-
             var parser =
-                from minus in Consume.Char('-')
+                from minus in Consume.Char('-').Optional()
                 from number in Consume.Char(char.IsDigit, "Digit")
-                select int.Parse($"{minus}{number}");
+                select int.Parse($"{minus.SomeOrProvided(' ')}{number}");
 
             var result = parser.Parse(text);
 
             result.Do(
                 pResult =>
                 {
-                    pResult.Value.Should().Be(-5);
+                    pResult.Value.Should().Be(value);
                     pResult.Start.Column.Should().Be(0);
-                    pResult.End.Column.Should().Be(1);
+                    pResult.End.Column.Should().Be(2);
                 }, failure => Assert.Fail(failure.Message));
-
         }
 
         [Test]
@@ -60,11 +58,9 @@ namespace FunctionalMonadsTests
             var output = parser.Parse(input);
 
             var left = output.Should().BeAssignableTo<Left<IPResult<string>>>().Subject;
-            left.Value.Start.Column.Should().Be(3);
-            left.Value.End.Column.Should().Be(3 + "Token".Length);
+            left.Value.Start.Column.Should().Be(0);
+            left.Value.End.Column.Should().Be(input.Length);
             left.Value.Value.Should().Be("Token");
-
-            input.Substring(left.Value.Start.Column, "Token".Length).Should().Be("Token");
         }
     }
 }

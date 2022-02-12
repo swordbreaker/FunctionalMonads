@@ -58,17 +58,16 @@ namespace FunctionalMonads.Monads.ParserMonad
 
         public static IParser<int> Int =>
             from minus in Char('-').Optional()
-            from digits in Digit.Many()
+            from digits in Digit.OneOrMore()
             select minus.Match(
                 c => -int.Parse(digits.AsString()),
                 () => int.Parse(digits.AsString()));
 
         public static IParser<double> Double =>
-            from characteristic in Int
-            from fractional in Char('.').Then(Digit.Many()).Optional()
-            select characteristic + fractional.Match(
-                c => double.Parse($"0{c}"),
-                () => 0);
-
+            from characteristic in Int.Optional()
+            from fractional in Char('.').Then(Digit.OneOrMore()).Optional() 
+            select characteristic.SomeOrProvided(0) + fractional.Match(
+                c => double.Parse($"0.{c.AsString()}"),
+                () => 0.0);
     }
 }

@@ -31,5 +31,10 @@ namespace FunctionalMonads.Monads.ParserMonad
         public bool CanAdvance => _position < _text.Length - 1;
 
         private bool IsNewLine => Current == '\n';
+
+        public override string ToString()
+        {
+            return $"{Column}:{Line}";
+        }
     }
 }

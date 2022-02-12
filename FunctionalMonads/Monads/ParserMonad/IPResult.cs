@@ -12,5 +12,7 @@ namespace FunctionalMonads.Monads.ParserMonad
         TextPoint End { get; }
 
         IPResult<K> With<K>(K newValue);
+
+        IPResult<T> With(TextPoint start, TextPoint end);
     }
 }

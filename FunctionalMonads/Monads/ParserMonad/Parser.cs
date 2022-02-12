@@ -30,6 +30,6 @@ namespace FunctionalMonads.Monads.ParserMonad
         public IParser<TBind> Bind<TBind>(Func<IPResult<T>, IParser<TBind>> binFunc) =>
             new Parser<TBind>(point =>
                 _parserFunc(point)
-                    .BindLeft(result => binFunc(result).Parse(result.End)));
+                    .BindLeft(result => binFunc(result).Parse(result.End).WithNewStart(result.Start)));
     }
 }

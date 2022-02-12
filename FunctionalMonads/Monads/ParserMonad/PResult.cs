@@ -2,19 +2,15 @@
 
 namespace FunctionalMonads.Monads.ParserMonad
 {
-    public class PResult<T> : IPResult<T>
+    public record PResult<T>(T Value, TextPoint Start, TextPoint End) : IPResult<T>
     {
-        public T Value { get; }
-        public TextPoint Start { get; }
-        public TextPoint End { get; }
         public IPResult<K> With<K>(K newValue) =>
             new PResult<K>(newValue, Start, End);
 
-        public PResult(T value, TextPoint start, TextPoint end)
-        {
-            Value = value;
-            Start = start;
-            End = end;
-        }
+        public override string ToString() =>
+            $"{Value} from {Start} to {End}";
+
+        public IPResult<T> With(TextPoint start, TextPoint end) => 
+            this with { Start = start, End = end };
     }
 }

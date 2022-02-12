@@ -24,6 +24,8 @@ namespace FunctionalMonads.Monads.ParserMonad
         public static IParser<TResult> Then<T, TResult>(this IParser<T> self, IParser<TResult> parser) =>
             self.Bind(_ => parser);
 
+
+
         public static IParser<IEnumerable<T>> Many<T>(this IParser<T> parser)
         {
             return new Parser<IEnumerable<T>>(point =>
@@ -43,6 +45,11 @@ namespace FunctionalMonads.Monads.ParserMonad
                     new PResult<IEnumerable<T>>(elements, point, current));
             });
         }
+
+        public static IParser<IEnumerable<T>> OneOrMore<T>(this IParser<T> parser) =>
+            from one in parser
+            from more in parser.Many()
+            select more.Prepend(one);
 
         //public static IParser<TResult> SelectMany<TSource, TSelector, TResult>(
         //    this IParser<TSource> self,
@@ -81,6 +88,9 @@ namespace FunctionalMonads.Monads.ParserMonad
                         result.With(Maybe.Some(result.Value))),
                     failure => Either.Left<IPResult<IMaybe<T>>, IParseFailure>(
                         new PResult<IMaybe<T>>(Maybe.None<T>(), failure.Start, failure.End))));
+
+        public static IEither<IPResult<T>, IParseFailure> WithNewStart<T>(this IEither<IPResult<T>, IParseFailure> self, TextPoint start) =>
+            self.Map(x => x.With(start, x.End), x => x.With(start, x.End));
 
         //public static IParser<T> Token<T>(IParser<T> self) =>
         //    from head in Consume.Whitespace.Many()

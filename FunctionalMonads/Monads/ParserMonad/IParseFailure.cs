@@ -6,5 +6,7 @@
         TextPoint End { get; }
 
         string Message { get; }
+
+        IParseFailure With(TextPoint start, TextPoint end);
     }
 }

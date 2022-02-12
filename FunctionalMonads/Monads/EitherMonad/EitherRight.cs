@@ -2,7 +2,7 @@
 
 namespace FunctionalMonads.Monads.EitherMonad
 {
-    public class EitherRight<TLeft, TRight> : IEitherT<TLeft, TRight>, Right<TLeft, TRight>
+    public record EitherRight<TLeft, TRight> : IEitherT<TLeft, TRight>, Right<TLeft, TRight>
     {
         public EitherRight(TRight value)
         {
