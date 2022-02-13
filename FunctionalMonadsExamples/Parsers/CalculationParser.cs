@@ -1,28 +1,37 @@
 ﻿using FunctionalMonads.Monads.EitherMonad;
 using FunctionalMonads.Monads.ParserMonad;
 using FunctionalMonadsExamples.Models.Operations;
+using FunctionalMonadsExamples.Models.Statement;
 
 namespace FunctionalMonadsExamples.Parsers
 {
     internal class CalculationParser
     {
-        private readonly char[] _supportedOperations = new char[] { '+', '-', '*', '/', '^'};
+        private static readonly char[] _supportedOperations = new char[] { '+', '-', '*', '/', '^'};
 
-        public IEither<IOperation<decimal>, IParseFailure> Parse(string text) =>
+        public IEither<IStatement, IParseFailure> Parse(string text) =>
             RootParser.ParseToValue(text);
 
-        private IParser<IOperation<decimal>> RootParser => 
-            from op in OperationParser
-            from eof in Consume.EndOfString
-            select op;
+        private static IParser<IStatement> RootParser =>
+            from statement in TimeParser | OperationParser | ExitParser
+            from eof in Consume.EndOfInput
+            select statement;
 
-        private IParser<IOperation<decimal>> OperationParser =>
+        private static IParser<IStatement> TimeParser =>
+            Consume.String("Time", caseSensitve: false)
+                .Select(e => new TimeStatement());
+
+        private static IParser<IStatement> ExitParser =>
+            (Consume.String("quit", caseSensitve: false) | Consume.String("exit", caseSensitve: false))
+            .Select(e => new ExitStatement());
+
+        private static IParser<DecimalOperation> OperationParser =>
             from a in Consume.Decimal
             from op in Consume.Char(_supportedOperations)
             from b in Consume.Decimal
             select MapToOperation(a, b, op);
 
-        private IOperation<decimal> MapToOperation(decimal a, decimal b, char op) =>
+        private static DecimalOperation MapToOperation(decimal a, decimal b, char op) =>
             op switch
             {
                 '+' => new AddOperations(a, b),

@@ -51,18 +51,5 @@ namespace FunctionalMondasTests
                 x => x.Value.Should().Be(expectedOutput),
                 f => Assert.Fail(f.Message));
         }
-
-        [Test]
-        public void Test()
-        {
-            var parser = from a in Consume.Double.Token()
-                         from add in Consume.Char('+')
-                         from b in Consume.Double.Token()
-                         select a + b;
-
-            var result = parser.Parse("5 +    2");
-
-            result.Do(x => x.Value.Should().Be(7.2), f => Assert.Fail());
-        }
     }
 }

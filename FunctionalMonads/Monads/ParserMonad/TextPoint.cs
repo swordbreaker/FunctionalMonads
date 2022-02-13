@@ -20,6 +20,7 @@ namespace FunctionalMonads.Monads.ParserMonad
         public IMaybe<TextPoint> Advance()
         {
             return CanAdvance
+
                 ? Maybe.Some(
                     new TextPoint(
                         _position + 1, _text,

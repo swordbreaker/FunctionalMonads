@@ -93,11 +93,23 @@ namespace FunctionalMonads.Monads.ParserMonad
         public static IEither<IPResult<T>, IParseFailure> WithNewStart<T>(this IEither<IPResult<T>, IParseFailure> self, TextPoint start) =>
             self.Map(x => x.With(start, x.Next), x => x.With(start, x.End));
 
-        //public static IParser<T> Token<T>(IParser<T> self) =>
-        //    from head in Consume.Whitespace.Many()
-        //    from content in self
-        //    from tail in Consume.Whitespace.Many()
-        //    select content;
+        /// <summary>
+        /// Succeeds when the parser fails. This will not advance the Pointer.
+        /// </summary>
+        /// <typeparam name="T">The input parser type.</typeparam>
+        /// <param name="parser">The input parser.</param>
+        /// <param name="message">The message shown when the parser succeeds and this fails.</param>
+        /// <returns>A new parser which retunrns nothing.</returns>
+        public static IParser<Unit> Not<T>(this IParser<T> parser, string message) =>
+            new Parser<Unit>(point =>
+            {
+                var result = parser.Parse(point);
+                return result.Bind(
+                    r => Either.Right<IPResult<Unit>, IParseFailure>(
+                        new ParseFailure(point, r.Next, message)),
+                    f => Either.Left<IPResult<Unit>, IParseFailure>(
+                        new PResult<Unit>(new Unit(), point, point)));
+            });
 
         public static IParser<T> Token<T>(this IParser<T> self) =>
             from head in Consume.Whitespace.Many()

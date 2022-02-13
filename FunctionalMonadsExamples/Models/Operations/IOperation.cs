@@ -1,9 +1,9 @@
-﻿using FunctionalMonadsExamples.Models.SyntaxNodes;
+﻿using FunctionalMonadsExamples.Models.Statement;
 
 namespace FunctionalMonadsExamples.Models.Operations
 {
-    internal interface IOperation<T> : SyntaxNode
+    internal interface IOperation<T> : IStatement
     {
-        public T Evaluate();
+        string Calculate(IOperationFormatter<T> formatter);
     }
 }

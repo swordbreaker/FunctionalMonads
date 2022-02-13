@@ -1,20 +1,21 @@
-﻿using FunctionalMonadsExamples.Parsers;
+﻿using FunctionalMonads.Monads.EitherMonad;
+using FunctionalMonads.Monads.ParserMonad;
+using FunctionalMonadsExamples.Models.Statement;
+using FunctionalMonadsExamples.Parsers;
 
 var parser = new CalculationParser();
 
-// See https://aka.ms/new-console-template for more information
-Console.WriteLine("Add a calulation:");
+Console.WriteLine("Write a statement.");
+
+IEither<IStatement, IParseFailure> result;
 do
 {
     var line = Console.ReadLine();
 
-    if (line != null)
-    {
-        parser.Parse(line)
-        .MapLeft(operation => operation.Evaluate())
-        .MapLeft(d => d.ToString("F2"))
+    result = parser.Parse(line ?? string.Empty);
+    result
+        .MapLeft(x => x.Evaluate())
         .Do(
-            x => Console.WriteLine($"= {x}"),
+            m => Console.WriteLine(m),
             f => Console.WriteLine(f.Message));
-    }
-} while (true);
+} while (!result.Match(x => x is ExitStatement, f => false));
