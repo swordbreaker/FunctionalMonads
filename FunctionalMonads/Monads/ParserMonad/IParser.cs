@@ -5,6 +5,11 @@ namespace FunctionalMonads.Monads.ParserMonad
 {
     public interface IParser<out T>
     {
+        /// <summary>
+        /// Parse the Text point.
+        /// </summary>
+        /// <param name="point"></param>
+        /// <returns>Either on success: <see cref="IPResult{T}"/> or on failure: <see cref="IParseFailure"/>.</returns>
         IEither<IPResult<T>, IParseFailure> Parse(TextPoint point);
 
         IParser<TMap> Map<TMap>(Func<IPResult<T>, TMap> mapFunc);
@@ -19,13 +24,5 @@ namespace FunctionalMonads.Monads.ParserMonad
 
         public static IParser<Unit> operator !(IParser<T> parser) =>
             parser.Not("Invalid input.");
-
-        //public IParser<TResult> SelectMany<TIntermediate, TResult>(
-        //    Func<T, IParser<TIntermediate>> mapper,
-        //    Func<T, TIntermediate, TResult> getResult) =>
-        //    this.Bind(value =>
-        //        mapper(value).Bind(
-        //            intermediate =>
-        //                Maybe.Some(getResult(value, intermediate))));
     }
 }

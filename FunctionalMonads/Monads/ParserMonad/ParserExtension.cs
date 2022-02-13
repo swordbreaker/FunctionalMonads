@@ -52,16 +52,6 @@ namespace FunctionalMonads.Monads.ParserMonad
             from more in parser.Many()
             select more.Prepend(one);
 
-        //public static IParser<TResult> SelectMany<TSource, TSelector, TResult>(
-        //    this IParser<TSource> self,
-        //    Func<IPResult<TSource>, IParser<TSelector>> selector,
-        //    Func<IPResult<TSource>, TSelector, TResult> getResult) =>
-        //    self.Bind(value =>
-        //        selector(value).Map(
-        //            intermediate =>
-        //                getResult(value, intermediate)));
-
-
         public static IParser<TResult> SelectMany<TSource, TSelector, TResult>(
             this IParser<TSource> self,
             Func<TSource, IParser<TSelector>> selector,
@@ -70,17 +60,6 @@ namespace FunctionalMonads.Monads.ParserMonad
                 selector(value.Value).Map(
                     intermediate =>
                         getResult(value.Value, intermediate)));
-
-        //TMonad<TResult> SelectMany<TSource, TSelector, TResult>(
-        //    TMonad<TSource> source,
-        //    Func<TSource, TMonad<TSelector>> selector,
-        //    Func<TSource, TSelector, TResult> resultSelector);
-
-        //public static IParser<B> SelectMany<A, B>(
-        //    this IParser<A> first,
-        //    Func<IPResult<A>, IParser<B>> selector)
-        //    => first.Bind(selector)
-
 
         public static IParser<IMaybe<T>> Optional<T>(this IParser<T> self) =>
             new Parser<IMaybe<T>>(point =>
@@ -111,6 +90,12 @@ namespace FunctionalMonads.Monads.ParserMonad
                         new PResult<Unit>(new Unit(), point, point)));
             });
 
+        /// <summary>
+        /// Parses a parser with surrounding whitespaces.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="self"></param>
+        /// <returns>A new parser.</returns>
         public static IParser<T> Token<T>(this IParser<T> self) =>
             from head in Consume.Whitespace.Many()
             from content in self

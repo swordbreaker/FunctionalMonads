@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using FluentAssertions;
+﻿using FluentAssertions;
 using FunctionalMonads.Monads.EitherMonad;
 using FunctionalMonads.Monads.MaybeMonad;
 using FunctionalMonads.Monads.ParserMonad;
@@ -34,18 +32,19 @@ namespace FunctionalMonadsTests
         {
             var parser =
                 from minus in Consume.Char('-').Optional()
-                from number in Consume.Char(char.IsDigit, "Digit")
+                from number in Consume.Digit.OneOrMore()
                 select int.Parse($"{minus.SomeOrProvided(' ')}{number}");
 
             var result = parser.Parse(text);
 
             result.Do(
-                pResult =>
+                onLeft: pResult =>
                 {
                     pResult.Value.Should().Be(value);
                     pResult.Start.Column.Should().Be(0);
                     pResult.Next.Column.Should().Be(2);
-                }, failure => Assert.Fail(failure.Message));
+                }, 
+                onRight: failure => Assert.Fail(failure.Message));
         }
 
         [Test]
