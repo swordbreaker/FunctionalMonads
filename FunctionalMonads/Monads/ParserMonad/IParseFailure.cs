@@ -1,10 +1,7 @@
 ﻿namespace FunctionalMonads.Monads.ParserMonad
 {
-    public interface IParseFailure
+    public interface IParseFailure : IParserOutput
     {
-        TextPoint Start { get; }
-        TextPoint End { get; }
-
         string Message { get; }
 
         IParseFailure With(TextPoint start, TextPoint end);

@@ -1,6 +1,5 @@
 ﻿using FluentAssertions;
 using FunctionalMonads.Monads.EitherMonad;
-using FunctionalMonads.Monads.MaybeMonad;
 using FunctionalMonads.Monads.ParserMonad;
 using NUnit.Framework;
 

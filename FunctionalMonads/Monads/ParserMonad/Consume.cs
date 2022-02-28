@@ -153,7 +153,7 @@ namespace FunctionalMonads.Monads.ParserMonad
         private static IParser<(int characteristic, string fractional)> FloatParser =>
             new Parser<(int characteristic, string fractional)>(point =>
             {
-                (int characteristic, string fractional) UnpackMaybe((IMaybe<int> characteristic, IMaybe<string> fractional) t) =>
+                static (int characteristic, string fractional) UnpackMaybe((IMaybe<int> characteristic, IMaybe<string> fractional) t) =>
                     (t.characteristic.SomeOrProvided(0),
                                  t.fractional
                                      .Map(x => x.AsString())

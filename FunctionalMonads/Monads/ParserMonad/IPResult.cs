@@ -1,15 +1,8 @@
-﻿using System;
-using System.Data;
-
-namespace FunctionalMonads.Monads.ParserMonad
+﻿namespace FunctionalMonads.Monads.ParserMonad
 {
-    public interface IPResult<out T>
+    public interface IPResult<out T> : IParserOutput
     {
         T Value { get; }
-
-        TextPoint Start { get; }
-
-        TextPoint Next { get; }
 
         IPResult<K> With<K>(K newValue);
 

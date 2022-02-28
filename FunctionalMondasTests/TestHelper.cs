@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Configuration.Internal;
 using FunctionalMonads.Monads.MaybeMonad;
 
 namespace FunctionalMonadsTests
 {
     public static class TestHelper
     {
-        private static Random rnd = new Random();
+        private static readonly Random rnd = new();
 
         public static string RandomString() =>
             Guid.NewGuid().ToString();

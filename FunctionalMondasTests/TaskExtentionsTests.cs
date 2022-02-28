@@ -1,10 +1,6 @@
 ﻿using FluentAssertions;
 using FunctionalMonads.Monads.TaskMonad;
 using NUnit.Framework;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace FunctionalMondasTests
@@ -42,7 +38,7 @@ namespace FunctionalMondasTests
         public async Task BindTest()
         {
             // arrange
-            Task<string> AddWorld(string a) => Task.FromResult(a + " World");
+            static Task<string> AddWorld(string a) => Task.FromResult(a + " World");
 
             var firstTask = Task.FromResult("Hello");
 

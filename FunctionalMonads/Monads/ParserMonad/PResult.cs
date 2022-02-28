@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace FunctionalMonads.Monads.ParserMonad
+﻿namespace FunctionalMonads.Monads.ParserMonad
 {
     public record PResult<T>(T Value, TextPoint Start, TextPoint Next) : IPResult<T>
     {

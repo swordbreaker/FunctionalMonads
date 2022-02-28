@@ -10,7 +10,7 @@ namespace FunctionalMonadsTests
         {
             IMaybe<Person> person = GetPersonFromAddress(address);
             IMaybe<Car> car = person.Bind(p => GetCarFromPerson(p));
-            return car.Map(c => c.model);
+            return car.Map(c => c.Model);
         }
 
         //from person in GetPersonFromAddress(address)
@@ -32,18 +32,18 @@ namespace FunctionalMonadsTests
 
         public record Person(string Name, Address Address);
 
-        public record Car(Person Person, string model);
+        public record Car(Person Person, string Model);
 
-        public IMaybe<Person> GetPersonFromAddress(Address address) =>
+        public static IMaybe<Person> GetPersonFromAddress(Address address) =>
             Maybe.Some(new Person("Hans", address));
 
-        public IMaybe<Car> GetCarFromPerson(Person person) =>
+        public static IMaybe<Car> GetCarFromPerson(Person person) =>
             person.Name == "Hans"
                 ? Maybe.Some(new Car(person, "BMW"))
                 : Maybe.None<Car>();
 
 
-        public IMaybe<int> Div(int a, int b)
+        public static IMaybe<int> Div(int a, int b)
         {
             if (b == 0)
             {

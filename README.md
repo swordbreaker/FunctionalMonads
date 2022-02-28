@@ -153,7 +153,7 @@ var left = Either.Left<string, double>("left value");
 ```
 Create a Either Monad with a right value.
 ```csharp
-var right = Either.Left<string, int>(42);
+var right = Either.Right<string, int>(42);
 ```
 You can also use Pattern matching
 ```csharp
@@ -188,4 +188,13 @@ Task<string> AddWorld(string a) =>
 var firstTask = Task.FromResult("Hello");
 var result = await firstTask.Bind(AddWorld);
 Debug.WriteLine(result); // Hello World
+```
+
+## Parser
+A simple parser is also provided. It provied a parse method which retunrs an Either Monad where Left is `IPResult<T>` and right `IParseFailure`.
+```csharp
+var result = Consume.Int.Parse(input);
+result.Do(
+    x => x.Value.Should().Be(number),
+    f => Assert.Fail(f.Message));
 ```
