@@ -44,13 +44,13 @@ namespace FunctionalMonads.Monads.MaybeMonad
             return bindFunction();
         }
 
-        public static bool operator ==(MaybeNone<T> maybe, T value) => 
+        public static bool operator ==(MaybeNone<T> maybe, T value) =>
             false;
 
         public static bool operator !=(MaybeNone<T> maybe, T value) =>
             !(maybe == value);
 
-        public bool Equals(IMaybe<T>? other) => 
+        public bool Equals(IMaybe<T> other) =>
             other is MaybeNone<T>;
 
         public bool Equals(MaybeNone<T> other) => 

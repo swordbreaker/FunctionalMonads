@@ -15,6 +15,17 @@ namespace FunctionalMonads.Monads.EitherMonad
         public static IEither<TLeft, TBindRight> BindRight<TLeft, TRight, TBindRight>(this IEither<TLeft, TRight> self, Func<TRight, IEither<TLeft, TBindRight>> bindFunc) =>
             self.Bind(Either.Left<TLeft, TBindRight>, bindFunc);
 
+        /// <summary>
+        /// This allows the form .. in .. syntax.
+        /// </summary>
+        /// <typeparam name="TLeft"></typeparam>
+        /// <typeparam name="TRight"></typeparam>
+        /// <typeparam name="TIntermediate"></typeparam>
+        /// <typeparam name="TResult"></typeparam>
+        /// <param name="self"></param>
+        /// <param name="mapper"></param>
+        /// <param name="getResult"></param>
+        /// <returns></returns>
         public static IEither<TResult, TRight> SelectMany<TLeft, TRight, TIntermediate, TResult>(
             this IEither<TLeft, TRight> self,
             Func<TLeft, IEitherT<TIntermediate, TRight>> mapper,

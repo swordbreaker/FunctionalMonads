@@ -1,13 +1,7 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.WebSockets;
-using System.Threading.Tasks;
 using FluentAssertions;
-using FluentAssertions.Formatting;
 using FunctionalMonads.Monads;
-using FunctionalMonads.Monads.EitherMonad;
 using FunctionalMonads.Monads.MaybeMonad;
 using NUnit.Framework;
 using static FunctionalMonads.Monads.MaybeMonad.Maybe;
@@ -107,7 +101,7 @@ namespace FunctionalMonadsTests
         public void SwitchPatternMatchingNoneTest()
         {
             // arrange
-            IMaybe<IEnumerable<int>> none = None<List<int>>();
+            var none = None<List<int>>();
 
             // act
             var result = none switch
