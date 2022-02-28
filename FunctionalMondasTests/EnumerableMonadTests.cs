@@ -17,14 +17,14 @@ namespace FunctionalMonadsTests
                 3,
             };
 
-            var result= sut.Match(
-                (h, b) => b.Append(h),
+            var result = sut.Match(
+                (h, t) => t.Append(h),
                 Enumerable.Empty<int>)
                 .ToList();
 
             result[0].Should().Be(sut[1]);
             result[1].Should().Be(sut[2]);
-            result.Last().Should().Be(result[0]);
+            result.Last().Should().Be(sut[0]);
         }
 
         [Test]

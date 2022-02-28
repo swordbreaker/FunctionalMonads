@@ -66,7 +66,7 @@ namespace FunctionalMonads.Monads.MaybeMonad
         public bool Equals(MaybeSome<T> other) => 
             EqualityComparer<T>.Default.Equals(Value, other.Value);
 
-        public bool Equals(IMaybe<T>? other) => 
+        public bool Equals(IMaybe<T> other) => 
             Equals((object)other);
 
         public override bool Equals(object obj) => 
@@ -77,10 +77,5 @@ namespace FunctionalMonads.Monads.MaybeMonad
 
         public override string ToString() =>
             $"MaybeSome({this.Value})";
-
-        public static IMaybe<T> operator |(MaybeSome<T> s, T value)
-        {
-            return Some(value);
-        }
     }
 }

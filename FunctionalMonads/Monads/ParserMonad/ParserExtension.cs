@@ -66,10 +66,10 @@ namespace FunctionalMonads.Monads.ParserMonad
                     result => Either.Left<IPResult<IMaybe<T>>, IParseFailure>(
                         result.With(Maybe.Some(result.Value))),
                     failure => Either.Left<IPResult<IMaybe<T>>, IParseFailure>(
-                        new PResult<IMaybe<T>>(Maybe.None<T>(), failure.Start, failure.End))));
+                        new PResult<IMaybe<T>>(Maybe.None<T>(), failure.Start, failure.Next))));
 
         public static IEither<IPResult<T>, IParseFailure> WithNewStart<T>(this IEither<IPResult<T>, IParseFailure> self, TextPoint start) =>
-            self.Map(x => x.With(start, x.Next), x => x.With(start, x.End));
+            self.Map(x => x.With(start, x.Next), x => x.With(start, x.Next));
 
         /// <summary>
         /// Succeeds when the parser fails. This will not advance the Pointer.
