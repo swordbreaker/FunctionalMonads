@@ -35,6 +35,23 @@ namespace FunctionalMonads.Monads.TaskMonad
         }
 
         /// <summary>
+        /// Flatten a nested Task of Task to Task.
+        /// </summary>
+        /// <typeparam name="T">The inner Type.</typeparam>
+        /// <param name="task">The nested </param>
+        /// <returns>A flattend Task.</returns>
+        /// <exception cref="ArgumentNullException">If taks is null.</exception>
+        public static async Task<T> Flatten<T>(this Task<Task<T>> task)
+        {
+            if (task == null)
+            {
+                throw new ArgumentNullException(nameof(task));
+            }
+
+            return await await task;
+        }
+
+        /// <summary>
         /// Replaces one contained object with another contained object.
         /// It can be viewed as a combination of <see cref="Map{TIn,TOut}" /> and
         /// <see cref="Task{TResult}.Result" />. Useful for chaining many Task operations.
@@ -68,7 +85,7 @@ namespace FunctionalMonads.Monads.TaskMonad
         private static async Task<TOut> MapInternal<TIn, TOut>(Task<TIn> task, Func<TIn, TOut> mapFunc, bool continueOnCapturedContext) =>
             mapFunc(await task.ConfigureAwait(continueOnCapturedContext));
 
-        private static async Task<TOut> BindInternal<TIn, TOut>(Task<TIn> task, Func<TIn, Task<TOut>> bindFunc, bool continueOnCapturedContext) =>
-            await bindFunc(await task.ConfigureAwait(continueOnCapturedContext)).ConfigureAwait(continueOnCapturedContext);
+        private static Task<TOut> BindInternal<TIn, TOut>(Task<TIn> task, Func<TIn, Task<TOut>> bindFunc, bool continueOnCapturedContext) =>
+            task.Map(bindFunc, continueOnCapturedContext).Flatten();
     }
 }

@@ -1,11 +1,57 @@
 # FunctionalMonads
 A simple library for monads in C#
 
-The libary constis of two new Monads and some extention methods.
+The library constis of three Monads (Maybe, Either and Parser) and some extention methods.
 
 ## What is a monad?
-A monad is a abstract structure for TODO
+A monad is a abstract structure with one or more inner types. For the structure to be called a monad is needs to support a set of functions:
+1. Construction: A way of elevating a primitive type to an Monad.
+```csharp
+return :: a -> Monad a
 
+Monad<int> monda = New(5);
+```
+2. The map function accepts a Function which acts on the primitve type and applys a transformation.
+```csharp
+map :: (a -> b) -> Monad a -> Monad b
+
+Monad<int> monadA = New(5);
+Monad<string> monadB monadA.Map(x => x.ToString())
+```
+3. The flatten function
+```csharp
+flatten :: Monad Monad a -> Monad a
+
+Monad<Monad<int>> monda = New(New(5));
+Monad<int> flattend = monad.Flatten();
+```
+4. The bind function which is a map followed by a flatten
+```csharp
+bind :: Monad a -> (a -> Monad b) -> Monad b
+
+Monad<int> monadA = New(5)
+Monad<double> mondaB = monadA.Bind(x => New(x/2.0)) 
+```
+In C# the LINQ provides for `IEnumerable` the monad functionality.
+1. Construction
+```csharp
+var seq = Enumerable.Range(1, 5);
+```
+2. Map
+```csharp
+var seq2 = seq.Select(x => x*2);
+```
+3. Flatten
+```csharp
+IEnumerable<IEnumerable<int>> seq = Enumerable.Repeat(Enumerable.Range(1, 5), 3);
+IEnumerable<int> seq2 = seq.SelectMany(x => x);
+```
+4. Bind
+```csharp
+var seq = Enumerable.Range(1, 3);
+var seq2 = seq.SelectMany(i => Enumerable.Repeat(i, 2));
+Console.WriteLine(string.Join(",", seq2)); // 1,1,2,2,3,3
+```
 ## Maybe
 The Maybe monad is helpful, when a value can have some value or can be none.
 
@@ -117,4 +163,29 @@ var value = either switch
     Right<int> i => i.ToString(),
     _ => throw new ArgumentOutOfRangeException(nameof(either))
 };
+```
+
+## Task as Monad
+A C\# Task is very simialar to a Monad but does not support all needed functionality, therefore this library provides three extention methods.
+
+Map
+```csharp
+var taskNumber = Task.FromResult(5);
+var result = await taskNumber.Map(i => i * 2);
+Debug.WriteLine(result); // 10
+```
+Flatten
+```csharp
+var nested = Task.FromResult(Task.FromResult(1));
+var result = await nested.Flatten();
+Debug.WriteLine(result); // 1
+```
+Bind
+```csharp
+Task<string> AddWorld(string a) => 
+    Task.FromResult(a + " World");
+
+var firstTask = Task.FromResult("Hello");
+var result = await firstTask.Bind(AddWorld);
+Debug.WriteLine(result); // Hello World
 ```
