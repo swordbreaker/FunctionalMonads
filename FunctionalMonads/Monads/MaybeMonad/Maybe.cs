@@ -1,4 +1,6 @@
-﻿namespace FunctionalMonads.Monads.MaybeMonad
+﻿using System;
+
+namespace FunctionalMonads.Monads.MaybeMonad
 {
     /// <summary>
     /// Static maybe methods.
@@ -42,5 +44,9 @@
             nullableValue.HasValue
                 ? Some(nullableValue.Value)
                 : None<T>();
+
+        public static IMaybe<TMap> Map<T, TMap>(IMaybe<T> maybe, Func<T, TMap> mapFunc) => 
+            maybe.Map(mapFunc);
+
     }
 }

@@ -4,7 +4,10 @@ A simple library for monads in C#
 The libary constis of two new Monads and some extention methods.
 
 ## What is a monad?
-A monad is a abstract structure for 
+A monad is a abstract structure for TODO
+
+## Maybe
+The Maybe monad is helpful, when a value can have some value or can be none.
 
 Create a Maybe with value.
 ```csharp
@@ -37,6 +40,10 @@ var y = maybe switch
     _ => throw new ArgumentOutOfRangeException(nameof(maybe))
 };
 ```
+Or:
+```csharp
+var y = maybe.Match(x => x, () => 0);
+```
 The Some struct is implicit castable to the underling type.
 ```csharp
 var some = new Some<int>(42);
@@ -47,7 +54,7 @@ Map for example `IMaybe<int>` to `IMaybe<string>`.
 var maybe = Maybe.Some(5);
 var textMaybe = maybe.Map(i => i.ToString());
 ```
-
+If you have a for example these two Methods.
 ```csharp
 public IMaybe<Person> GetPersonFromAddress(Address address) =>
     Maybe.Some(new Person("Hans", address));
@@ -57,7 +64,7 @@ public IMaybe<Car> GetCarFromPerson(Person person) =>
         ? Maybe.Some(new Car(person, "BMW"))
         : Maybe.None<Car>();
 ```
-
+You could retriev the car model as follows:
 ```csharp
 public IMaybe<string> GetModel(Address address)
 {
@@ -67,26 +74,47 @@ public IMaybe<string> GetModel(Address address)
         var car = GetCarFromPerson(somePerson);
         if (car is Some<Car> someCar)
         {
-            return Maybe.Some(someCar.Value);
+            return Maybe.Some(someCar.Value.Model);
         }
     }
 
     return Maybe.None<string>;
 }
 ```
-
+Or you could use Bind which does a Map from `IMaybe<T>` to `IMaybe<IMaybe<K>>` and the flatten it to `IMaybe<K>`.
 ```csharp
 public IMaybe<string> GetModel(Address address)
 {
     IMaybe<Person> person = GetPersonFromAddress(address);
     IMaybe<Car> car = person.Bind(GetCarFromPerson);
-    return car.Map(c => c.model);
+    return car.Map(c => c.Model);
 }
 ```
-
+Or even better use the `for .. in` syntax.
 ```csharp
 public IMaybe<string> GetModel(Address address) =>
     from person in GetPersonFromAddress(address)
     from car in GetCarFromPerson(person)
     select car.model;
+```
+
+## Either
+The Either Monad is helpful when a return value can be either of a type a or a type b.
+
+Create a Either Monad with a left value.
+```csharp
+var left = Either.Left<string, double>("left value");
+```
+Create a Either Monad with a right value.
+```csharp
+var right = Either.Left<string, int>(42);
+```
+You can also use Pattern matching
+```csharp
+var value = either switch
+{
+    Left<string> l => l,
+    Right<int> i => i.ToString(),
+    _ => throw new ArgumentOutOfRangeException(nameof(either))
+};
 ```

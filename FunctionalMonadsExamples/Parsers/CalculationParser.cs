@@ -14,16 +14,16 @@ namespace FunctionalMonadsExamples.Parsers
 
         private static IParser<IStatement> RootParser =>
             from statement in TimeParser | OperationParser | ExitParser
-            from eof in Consume.EndOfInput
+            from eoi in Consume.EndOfInput
             select statement;
 
         private static IParser<IStatement> TimeParser =>
             Consume.String("Time", caseSensitve: false)
-                .Select(e => new TimeStatement());
+                .Select(_ => new TimeStatement());
 
         private static IParser<IStatement> ExitParser =>
-            (Consume.String("quit", caseSensitve: false) | Consume.String("exit", caseSensitve: false))
-            .Select(e => new ExitStatement());
+            from _ in Consume.String("quit", caseSensitve: false) | Consume.String("exit", caseSensitve: false)
+            select new ExitStatement();
 
         private static IParser<DecimalOperation> OperationParser =>
             from a in Consume.Decimal

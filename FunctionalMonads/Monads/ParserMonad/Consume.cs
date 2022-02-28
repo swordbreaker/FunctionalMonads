@@ -19,7 +19,7 @@ namespace FunctionalMonads.Monads.ParserMonad
             new Parser<char>(point =>
             {
                 if (predicate(point.Current)) 
-                { 
+                {
                     return point.Advance().Match(
                         onSome: textPoint =>
                             Success(point.Current, point, textPoint),
