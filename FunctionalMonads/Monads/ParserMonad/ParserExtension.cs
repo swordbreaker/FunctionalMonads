@@ -33,11 +33,11 @@ namespace FunctionalMonads.Monads.ParserMonad
                 var elements = new List<T>();
                 var current = point;
                 var result = parser.Parse(point);
-                while (current.Advance() is Some<TextPoint> next &&
+                while (current.CanAdvance &&
                        result is Left<IPResult<T>, IParseFailure> successElement)
                 {
                     elements.Add(successElement.Value.Value);
-                    current = next.Value;
+                    current = successElement.Value.Next;
                     result = parser.Parse(current);
                 }
 

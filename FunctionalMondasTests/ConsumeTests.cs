@@ -1,6 +1,10 @@
 ﻿using FluentAssertions;
+using FunctionalMonads.Monads.EitherMonad;
 using FunctionalMonads.Monads.ParserMonad;
 using NUnit.Framework;
+using System;
+using System.Diagnostics;
+using System.Linq;
 
 namespace FunctionalMondasTests
 {

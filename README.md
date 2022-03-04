@@ -193,8 +193,27 @@ Debug.WriteLine(result); // Hello World
 ## Parser
 A simple parser is also provided. It provied a parse method which retunrs an Either Monad where Left is `IPResult<T>` and right `IParseFailure`.
 ```csharp
-var result = Consume.Int.Parse(input);
-result.Do(
-    x => x.Value.Should().Be(number),
-    f => Assert.Fail(f.Message));
+var result = Consume.Int.Parse("5");
+
+result
+    .IfLeft(success => 
+        Console.WriteLine($"Parsed {success.Value} at {success.Start.Column}:{success.Start.Line}"));
+// Will output: Parsed 5 at 0:0
+```
+The Parse also supports the `for .. in` syntax.
+```csharp
+var pointParser =
+    from prefix in Consume.Char('P')
+    from openBrace in Consume.Char('(')
+    from numbers in Consume.Int.Token().OneOrMore()
+    from closeBrace in Consume.Char(')')
+    select numbers.ToArray();
+
+var result = pointParser.ParseToValue("P(1 2 3)");
+result.IfLeft(x => Console.WriteLine(string.Join(',', x)));
+// Will output: 1,2,3
+
+var failure = pointParser.ParseToValue("P1 2 3)");
+failure.IfRight(f => Console.WriteLine(f.Message));
+// Will output: Expected ( got 1.
 ```
