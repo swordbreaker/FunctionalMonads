@@ -12,7 +12,6 @@ namespace FunctionalMonadsTests
 {
     public class Tests
     {
-
         [Test]
         public void MapSomeTest()
         {

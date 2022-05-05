@@ -48,5 +48,7 @@ namespace FunctionalMonads.Monads.MaybeMonad
         public static IMaybe<TMap> Map<T, TMap>(IMaybe<T> maybe, Func<T, TMap> mapFunc) => 
             maybe.Map(mapFunc);
 
+        public static IMaybe<TBind> Bind<T, TBind>(IMaybe<T> maybe, Func<T, IMaybe<TBind>> bindFunc) => 
+            maybe.Bind(bindFunc);
     }
 }

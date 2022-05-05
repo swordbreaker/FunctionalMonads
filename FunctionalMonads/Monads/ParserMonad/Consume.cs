@@ -94,6 +94,12 @@ namespace FunctionalMonads.Monads.ParserMonad
             Char(char.IsWhiteSpace, "whitespace");
 
         /// <summary>
+        /// Consumes any char.
+        /// </summary>
+        public static IParser<char> AnyChar =>
+            Char(_ => true, "any char");
+
+        /// <summary>
         /// Consume a end of line.
         /// </summary>
         public static IParser<string> EndOfLine =>

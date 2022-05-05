@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using FunctionalMonads.Monads.EitherMonad;
 
 namespace FunctionalMonads.Monads.MaybeMonad
 {
@@ -37,19 +38,35 @@ namespace FunctionalMonads.Monads.MaybeMonad
         }
 
         /// <summary>
-        /// Convert to result.
+        /// Convert a <see cref="IMaybe{T}"/> monad to a <see cref="IEither{TLeft,TRight}"/> monad.
+        /// When the maybe is some return the value as a left value.
+        /// Else return the provided right value.
         /// </summary>
-        /// <typeparam name="TValue">The type of the value.</typeparam>
-        /// <typeparam name="TFailure">The type of the failure.</typeparam>
-        /// <param name="self">The maybe monad to convert.</param>
-        /// <param name="onNone">Failure when the maybe is none.</param>
-        /// <returns>A result which is success on some and failure on none.</returns>
-        //public static IResult<TValue, TFailure> ToResult<TValue, TFailure>(this Maybe<TValue> self, TFailure onNone)
-        //    where TFailure : Failure =>
-        //        self.Match(
-        //            some: Result.Success<TValue, TFailure>,
-        //            none: Result.Failure<TValue, TFailure>(onNone));
+        /// <param name="self"></param>
+        /// <param name="rightValue"></param>
+        /// <typeparam name="TLeft"></typeparam>
+        /// <typeparam name="TRight"></typeparam>
+        /// <returns></returns>
+        public static IEither<TLeft, TRight> ToEitherLeft<TLeft, TRight>(this IMaybe<TLeft> self, TRight rightValue) =>
+            self.Match(
+                Either.Left<TLeft, TRight>,
+                () => Either.Right<TLeft, TRight>(rightValue));
 
+        /// <summary>
+        /// Convert a <see cref="IMaybe{T}"/> monad to a <see cref="IEither{TLeft,TRight}"/> monad.
+        /// When the maybe is some return the value as a left value.
+        /// Else return the provided right value.
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="leftValue"></param>
+        /// <typeparam name="TLeft"></typeparam>
+        /// <typeparam name="TRight"></typeparam>
+        /// <returns></returns>
+        public static IEither<TLeft, TRight> ToEitherRight<TLeft, TRight>(this IMaybe<TRight> self, TLeft leftValue) =>
+            self.Match(
+                Either.Right<TLeft, TRight>,
+                () => Either.Left<TLeft, TRight>(leftValue));
+        
         /// <summary>
         /// Extracts from a list of `Option` all the `MaybeSome` elements.
         /// All the `MaybeSome` elements are extracted in order.

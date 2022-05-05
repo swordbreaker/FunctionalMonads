@@ -2,14 +2,14 @@
 
 namespace FunctionalMonads.Monads.EitherMonad
 {
-    public record EitherRight<TLeft, TRight> : IEitherT<TLeft, TRight>, Right<TLeft, TRight>
+    public record EitherRight<TRight>(TRight Value)
     {
-        public EitherRight(TRight value)
-        {
-            Value = value;
-        }
-
-        public TRight Value { get; }
+        public IEither<TLeft, TRight> WithLeft<TLeft>() =>
+            (EitherRight<TLeft, TRight>)this;
+    }
+    
+    public record EitherRight<TLeft, TRight>(TRight Value) : IEitherT<TLeft, TRight>, Right<TLeft, TRight>
+    {
         public bool IsLeft => false;
         public bool IsRight => true;
 
@@ -25,6 +25,9 @@ namespace FunctionalMonads.Monads.EitherMonad
         public Unit Do(Action<TLeft> onLeft, Action<TRight> onRight) =>
             onRight.ToUnit()(Value);
 
+        public static implicit operator EitherRight<TLeft, TRight>(EitherRight<TRight> other) =>
+            new(other.Value);
+        
         public override string ToString() =>
             $"EitherRight({Value})";
     }
